@@ -9,7 +9,7 @@ const Bucket = import.meta.env.VITE_BUCKET_NAME;
 
 function App() {
   const hiddenEl = useRef(null);
-  // const [renderedImages, setRenderedImages] = useState('');
+  const [images, setImages] = useState([]);
   const client = new S3Client({
     region: 'eu-north-1',
     credentials: {
@@ -17,25 +17,19 @@ function App() {
       accessKeyId
     }
   });
-  let renderedImages;
-
-  const filename = 'imm000_N0.jpg'
 
   useEffect(() => {
 
-    // getImages();
     showImages();
 
   }, [])
 
-  function handleClick(event) {
+  function handleClick() {
     hiddenEl.current.click();
-    console.log('click');
   }
 
   async function handleChange(event) {
     const file = event.target.files[0];
-    console.log(file);
 
     const input = {
       Bucket,
@@ -65,14 +59,11 @@ function App() {
       const data = await client.send(command);
       console.log('data.Content från bucket: ', data.Contents);
 
-      renderedImages = data.Contents.map(filename => {
-        console.log(filename.Key)
-        return <img src={`https://${Bucket}.s3.eu-north-1.amazonaws.com/${filename.Key}`} />
-      })
-
-      console.log(renderedImages)
-
-      // return data.Contents;
+      const renderedImages = data.Contents.map((filename, i) => {
+        return <img key={i} src={`https://${Bucket}.s3.eu-north-1.amazonaws.com/${filename.Key}`} />
+      });
+      setImages(renderedImages);
+      return data.Contents;
     } catch (err) {
       console.log(err);
       return err;
@@ -85,7 +76,7 @@ function App() {
       <input type="file" style={{ display: 'none' }} onChange={handleChange} ref={hiddenEl} />
       <button onClick={handleClick}>Upload</button>
       <section className="image-grid">
-        {renderedImages}
+        {images}
       </section>
     </main>
   );
