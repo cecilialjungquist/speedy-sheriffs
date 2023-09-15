@@ -22,7 +22,7 @@ function App() {
   useEffect(() => {
 
     async function getImages() {
-      const images = await fetch(`https://${Bucket}.s3.eu-north-1.amazonaws.com/`);
+      const images = await fetch(`https://${Bucket}.s3.eu-north-1.amazonaws.com/${filename}`);
       console.log(images);
     }
 
