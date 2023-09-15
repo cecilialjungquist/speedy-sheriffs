@@ -1,5 +1,5 @@
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import './App.css';
 
 
@@ -17,7 +17,18 @@ function App() {
     }
   });
 
-  console.log(`key: ${secretAccessKey}, bucket: ${Bucket}`);
+  const filename = 'kicki.jpg'
+
+  useEffect(() => {
+
+    async function getImages() {
+      const images = await fetch(`https://${Bucket}.s3.eu-north-1.amazonaws.com/`);
+      console.log(images);
+    }
+
+    getImages();
+
+  }, [])
 
   function handleClick(event) {
     hiddenEl.current.click();
@@ -33,14 +44,6 @@ function App() {
       Key: file.name,
       Body: file,
     }
-
-    // const URL = await fetch('http://acs.amazonaws.com/groups/global/AllUsers', {
-    //   method: "PUT",
-    //   headers: {
-    //     "Content-Type": "multipart/form-data",
-    //   },
-    //   body: input
-    // });
 
     // Nån typ av validering behövs här?
     const command = new PutObjectCommand(input);
