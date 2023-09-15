@@ -1,7 +1,6 @@
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { useRef } from "react";
 import './App.css';
-// import { configDotenv } from "dotenv";
 
 
 const secretAccessKey = import.meta.env.VITE_SECRET_ACCESS_KEY; 
