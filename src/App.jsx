@@ -31,10 +31,12 @@ function App() {
   async function handleChange(event) {
     const file = event.target.files[0];
 
+    // Key behöver också innehålla directory, kanske i form av state från dropdown?
     const input = {
       Bucket,
-      Key: file.name,
-      Body: file,
+      Key: file.name, // `${directory}/${file.name}`
+      Body: file
+      //  Metadata: { directory: 'ALBUM' },
     }
 
     // Nån typ av validering behövs här?
@@ -45,10 +47,13 @@ function App() {
     } catch (error) {
       console.log(error);
       throw error;
+    } finally {
+      showImages();
     }
   }
 
   async function showImages() {
+    // Ta in directory som parameter här och addera till input som Key?
 
     let params = {
       Bucket
@@ -57,7 +62,7 @@ function App() {
 
     try {
       const data = await client.send(command);
-      console.log('data.Content från bucket: ', data.Contents);
+      console.log('data.Contents från bucket: ', data.Contents);
 
       const renderedImages = data.Contents.map((filename, i) => {
         return <img key={i} src={`https://${Bucket}.s3.eu-north-1.amazonaws.com/${filename.Key}`} />
@@ -82,4 +87,4 @@ function App() {
   );
 }
 
-export default App
+export default App;
