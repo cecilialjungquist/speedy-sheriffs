@@ -43,9 +43,9 @@ function App() {
     const input = {
       Bucket,
       // Key: file.name, 
-      Key: `${selectedCategory}/${file.name}`, // `${directory}/${file.name}`
+      Key: file.name, // `${selectedCategory}/${file.name}`
       Body: file,
-      Metadata: { category: selectedCategory }
+      Metadata: { "category": selectedCategory }
     }
 
     // Nån typ av validering behövs här?
