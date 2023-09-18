@@ -1,6 +1,7 @@
 import { S3Client, PutObjectCommand, ListObjectsV2Command } from "@aws-sdk/client-s3";
 import { useEffect, useRef, useState } from "react";
 import './App.css';
+import Dropdown from "./components/Dropdown";
 
 
 const secretAccessKey = import.meta.env.VITE_SECRET_ACCESS_KEY;
@@ -10,6 +11,13 @@ const Bucket = import.meta.env.VITE_BUCKET_NAME;
 function App() {
   const hiddenEl = useRef(null);
   const [images, setImages] = useState([]);
+  const [categories, setCategories] = useState([
+    'Vacay',
+    'Family',
+    'Nature'
+  ]);
+  const [selectedCategory, setSelectedCategory] = useState('');
+
   const client = new S3Client({
     region: 'eu-north-1',
     credentials: {
@@ -34,9 +42,10 @@ function App() {
     // Key behöver också innehålla directory, kanske i form av state från dropdown?
     const input = {
       Bucket,
-      Key: file.name, // `${directory}/${file.name}`
-      Body: file
-      //  Metadata: { directory: 'ALBUM' },
+      // Key: file.name, 
+      Key: `${selectedCategory}/${file.name}`, // `${directory}/${file.name}`
+      Body: file,
+      Metadata: { category: selectedCategory }
     }
 
     // Nån typ av validering behövs här?
@@ -64,6 +73,7 @@ function App() {
       const data = await client.send(command);
       console.log('data.Contents från bucket: ', data.Contents);
 
+      // Implementera logik för att gå igenom alla mappar och hämta innehållet, hämta inte vad som finns i root
       const renderedImages = data.Contents.map((filename, i) => {
         return <img key={i} src={`https://${Bucket}.s3.eu-north-1.amazonaws.com/${filename.Key}`} />
       });
@@ -76,8 +86,15 @@ function App() {
 
   }
 
+  function handleCategoryChange(event) {
+    const inputCategory = event.target.value;
+    console.log('inputCategory', inputCategory);
+    setSelectedCategory(inputCategory);
+  }
+
   return (
     <main>
+      <Dropdown selectedCategory={selectedCategory} categories={categories} handleCategoryChange={handleCategoryChange} />
       <input type="file" style={{ display: 'none' }} onChange={handleChange} ref={hiddenEl} />
       <button onClick={handleClick}>Upload</button>
       <section className="image-grid">
