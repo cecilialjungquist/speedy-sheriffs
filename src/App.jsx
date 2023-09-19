@@ -2,7 +2,7 @@ import { S3Client, PutObjectCommand, ListObjectsV2Command } from "@aws-sdk/clien
 import { useEffect, useRef, useState } from "react";
 import './App.css';
 import Dropdown from "./components/Dropdown";
-import Album from "./components/Album";
+import Albums from "./components/Albums";
 
 
 const secretAccessKey = import.meta.env.VITE_SECRET_ACCESS_KEY;
@@ -12,13 +12,9 @@ const Bucket = import.meta.env.VITE_BUCKET_NAME;
 function App() {
   const hiddenEl = useRef(null);
   const [images, setImages] = useState([]);
-  // const [categories, setCategories] = useState([
-  //   'Vacay',
-  //   'Family',
-  //   'Nature'
-  // ]);
-  const categories = ['Vacay', 'Family', 'Nature'];
-  const [selectedCategory, setSelectedCategory] = useState(categories[0].toLowerCase());
+
+  const categories = ['Vacay', 'Family', 'Nature', 'Other'];
+  const [selectedCategory, setSelectedCategory] = useState('');
 
   const client = new S3Client({
     region: 'eu-north-1',
@@ -29,9 +25,7 @@ function App() {
   });
 
   useEffect(() => {
-
     showImages();
-
   }, [])
 
   function handleClick() {
@@ -41,20 +35,16 @@ function App() {
   async function handleChange(event) {
     const file = event.target.files[0];
 
-    // Key behöver också innehålla directory, kanske i form av state från dropdown?
     const input = {
       Bucket,
-      // Key: file.name, 
-      Key: file.name, // `${selectedCategory}/${file.name}`
+      Key: file.name, 
       Body: file,
-      Metadata: { "category": selectedCategory }  // Lägg in mer här? Typ filtyp, caption, people osv
+      Metadata: { "category": selectedCategory || 'other' } 
     }
 
-    // Nån typ av validering behövs här?
     const command = new PutObjectCommand(input);
     try {
       const response = await client.send(command);
-      console.log(response);
     } catch (error) {
       console.log(error);
       throw error;
@@ -64,7 +54,6 @@ function App() {
   }
 
   async function showImages(directory) {
-    // Ta in directory som parameter här och addera till input som Key?
 
     const input = {
       Bucket
@@ -73,7 +62,6 @@ function App() {
 
     try {
       const data = await client.send(command);
-      console.log('data.Contents från bucket: ', data.Contents);
       let renderedImages;
 
       if (directory) {
@@ -94,25 +82,32 @@ function App() {
       console.log(err);
       return err;
     }
-
   }
 
   function handleCategoryChange(event) {
     const inputCategory = event.target.value;
-    console.log('inputCategory', inputCategory);
     setSelectedCategory(inputCategory);
   }
 
   return (
-    <main>
-      <Album categories={categories} handleAlbums={showImages} />
-      <Dropdown selectedCategory={selectedCategory} categories={categories} handleCategoryChange={handleCategoryChange} />
-      <input type="file" style={{ display: 'none' }} onChange={handleChange} ref={hiddenEl} />
-      <button onClick={handleClick}>Upload</button>
-      <section className="image-grid">
-        {images}
-      </section>
-    </main>
+    <>
+      <div className="hero">
+        <h1>A Year In Pictures</h1>
+      </div>
+      <header>
+        <section className="upload-section">
+          <Dropdown selectedCategory={selectedCategory} categories={categories} handleCategoryChange={handleCategoryChange} />
+          <input type="file" style={{ display: 'none' }} onChange={handleChange} ref={hiddenEl} />
+          <button className="upload-button" onClick={handleClick}>Upload</button>
+        </section>
+        <Albums categories={categories} handleAlbums={showImages} />
+      </header>
+      <main>
+        <section className="image-grid">
+          {images}
+        </section>
+      </main>
+    </>
   );
 }
 

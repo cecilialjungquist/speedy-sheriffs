@@ -4,9 +4,9 @@ function Dropdown({ handleCategoryChange, selectedCategory, categories }) {
         return <option key={i} value={category.toLowerCase()}>{category}</option>
     });
 
-
     return (  
-        <select onChange={handleCategoryChange} value={selectedCategory}>
+        <select className="dropdown" onChange={handleCategoryChange} value={selectedCategory}>
+            <option value="" disabled>Choose upload album...</option>
             {renderedCategories}
         </select>
     );

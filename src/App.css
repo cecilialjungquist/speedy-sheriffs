@@ -11,3 +11,30 @@
     justify-content: center;
     align-self: center;
 }
+
+.albums {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+.dropdown {
+    background-color: rgb(254, 254, 254);
+    border: 2px solid rgb(37, 149, 130);
+    border-radius: 6px;
+    padding: .6rem 1rem;
+}
+
+.upload-button {
+    appearance: none;
+    background-color: rgb(57, 57, 57);
+    border: 2px solid rgb(37, 149, 130);
+    border-radius: 6px;
+    padding: .6rem 1rem;
+    color: white;
+}
+
+.upload-section {
+    display: flex;
+    gap: 1rem;
+}
