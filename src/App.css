@@ -1,0 +1,12 @@
+.image-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    /* grid-auto-flow: row dense; */
+    gap: 1rem;
+}
+
+.image-grid div {
+    display: flex;
+    justify-content: center;
+    align-self: center;
+}

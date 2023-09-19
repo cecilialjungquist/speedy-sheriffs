@@ -75,8 +75,9 @@ function App() {
 
       // Implementera logik för att gå igenom alla mappar och hämta innehållet, hämta inte vad som finns i root
       const renderedImages = data.Contents.map((filename, i) => {
-        return <img key={i} src={`https://${Bucket}.s3.eu-north-1.amazonaws.com/${filename.Key}`} />
+        return <div key={i}><img src={`https://${Bucket}.s3.eu-north-1.amazonaws.com/${filename.Key}`} /></div>
       });
+
       setImages(renderedImages);
       return data.Contents;
     } catch (err) {
