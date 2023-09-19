@@ -2,6 +2,7 @@ import { S3Client, PutObjectCommand, ListObjectsV2Command } from "@aws-sdk/clien
 import { useEffect, useRef, useState } from "react";
 import './App.css';
 import Dropdown from "./components/Dropdown";
+import Album from "./components/Album";
 
 
 const secretAccessKey = import.meta.env.VITE_SECRET_ACCESS_KEY;
@@ -46,7 +47,7 @@ function App() {
       // Key: file.name, 
       Key: file.name, // `${selectedCategory}/${file.name}`
       Body: file,
-      Metadata: { "category": selectedCategory }
+      Metadata: { "category": selectedCategory }  // Lägg in mer här? Typ filtyp, caption, people osv
     }
 
     // Nån typ av validering behövs här?
@@ -62,7 +63,7 @@ function App() {
     }
   }
 
-  async function showImages() {
+  async function showImages(directory) {
     // Ta in directory som parameter här och addera till input som Key?
 
     const input = {
@@ -73,11 +74,19 @@ function App() {
     try {
       const data = await client.send(command);
       console.log('data.Contents från bucket: ', data.Contents);
+      let renderedImages;
 
-      // Implementera logik för att gå igenom alla mappar och hämta innehållet, hämta inte vad som finns i root
-      const renderedImages = data.Contents.map((filename, i) => {
-        return <div key={i}><img src={`https://${Bucket}.s3.eu-north-1.amazonaws.com/${filename.Key}`} /></div>
-      });
+      if (directory) {
+        renderedImages = data.Contents.map((filename, i) => {
+          if (filename.Key.includes(directory)) {
+            return <div key={i}><img src={`https://${Bucket}.s3.eu-north-1.amazonaws.com/${filename.Key}`} /></div>
+          }
+        });
+      } else {
+        renderedImages = data.Contents.map((filename, i) => {
+          return <div key={i}><img src={`https://${Bucket}.s3.eu-north-1.amazonaws.com/${filename.Key}`} /></div>
+        });
+      };
 
       setImages(renderedImages);
       return data.Contents;
@@ -96,6 +105,7 @@ function App() {
 
   return (
     <main>
+      <Album categories={categories} handleAlbums={showImages} />
       <Dropdown selectedCategory={selectedCategory} categories={categories} handleCategoryChange={handleCategoryChange} />
       <input type="file" style={{ display: 'none' }} onChange={handleChange} ref={hiddenEl} />
       <button onClick={handleClick}>Upload</button>
