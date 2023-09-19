@@ -11,12 +11,13 @@ const Bucket = import.meta.env.VITE_BUCKET_NAME;
 function App() {
   const hiddenEl = useRef(null);
   const [images, setImages] = useState([]);
-  const [categories, setCategories] = useState([
-    'Vacay',
-    'Family',
-    'Nature'
-  ]);
-  const [selectedCategory, setSelectedCategory] = useState('');
+  // const [categories, setCategories] = useState([
+  //   'Vacay',
+  //   'Family',
+  //   'Nature'
+  // ]);
+  const categories = ['Vacay', 'Family', 'Nature'];
+  const [selectedCategory, setSelectedCategory] = useState(categories[0].toLowerCase());
 
   const client = new S3Client({
     region: 'eu-north-1',
