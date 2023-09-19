@@ -6,6 +6,7 @@ function Album({ categories, handleAlbums }) {
 
     return ( 
         <section>
+            <button onClick={() => handleAlbums()}>Show all</button>
             {albums}
         </section>
     );
