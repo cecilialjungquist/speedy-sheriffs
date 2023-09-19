@@ -64,10 +64,10 @@ function App() {
   async function showImages() {
     // Ta in directory som parameter här och addera till input som Key?
 
-    let params = {
+    const input = {
       Bucket
     };
-    const command = new ListObjectsV2Command(params);
+    const command = new ListObjectsV2Command(input);
 
     try {
       const data = await client.send(command);
