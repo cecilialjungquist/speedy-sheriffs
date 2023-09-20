@@ -4,7 +4,6 @@ import './App.css';
 import Dropdown from "./components/Dropdown";
 import Albums from "./components/Albums";
 
-
 const secretAccessKey = import.meta.env.VITE_SECRET_ACCESS_KEY;
 const accessKeyId = import.meta.env.VITE_ACCESS_KEY_ID;
 const Bucket = import.meta.env.VITE_BUCKET_NAME;
