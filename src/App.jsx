@@ -34,7 +34,6 @@ function App() {
   async function handleChange(event) {
     const file = event.target.files[0];
     const randomName = `${Date.now()}-${file.name}`;
-    console.log(randomName);
 
     const input = {
       Bucket,
